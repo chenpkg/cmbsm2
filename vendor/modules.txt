@@ -1,0 +1,5 @@
+# github.com/ZZMarquis/gm v1.3.2
+## explicit
+github.com/ZZMarquis/gm/sm2
+github.com/ZZMarquis/gm/sm3
+github.com/ZZMarquis/gm/util
