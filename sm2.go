@@ -153,14 +153,33 @@ func Verify(src, sign, publicKey string) (bool, error) {
 	return sm2.VerifyByRS(pub, userId, []byte(src), r, s), nil
 }
 
+func resolveSrc(src string, src64 string) (string, error) {
+	if src != "" {
+		return src, nil
+	}
+
+	if src64 != "" {
+		str, err := base64.StdEncoding.DecodeString(src64)
+		if err != nil {
+			return "", errors.New("decode src64 error")
+		}
+
+		return string(str), nil
+	}
+
+	return "", errors.New("error resolve src")
+}
+
 func main() {
 	signCmd := flag.NewFlagSet("sign", flag.ExitOnError)
 	src := signCmd.String("src", "", "content string")
+	src64 := signCmd.String("src64", "", "content base64 string")
 	pri := signCmd.String("pri", "", "private key")
 	sUserId := signCmd.String("uid", "1234567812345678", "user id")
 
 	verifyCmd := flag.NewFlagSet("verify", flag.ExitOnError)
 	vSrc := verifyCmd.String("src", "", "content string")
+	vSrc64 := verifyCmd.String("src64", "", "content base64 string")
 	pub := verifyCmd.String("pub", "", "public key")
 	sign := verifyCmd.String("sign", "", "sign")
 	vUserId := verifyCmd.String("uid", "1234567812345678", "user id")
@@ -174,7 +193,13 @@ func main() {
 	case "sign":
 		signCmd.Parse(os.Args[2:])
 		userId = []byte(*sUserId)
-		sign, err := Sign(*pri, *src)
+
+		content, err := resolveSrc(*src, *src64)
+		if err != nil {
+			os.Exit(1)
+		}
+
+		sign, err := Sign(*pri, content)
 		if err != nil {
 			os.Exit(1)
 		}
@@ -182,7 +207,13 @@ func main() {
 	case "verify":
 		verifyCmd.Parse(os.Args[2:])
 		userId = []byte(*vUserId)
-		status, err := Verify(*vSrc, *sign, *pub)
+
+		content, err := resolveSrc(*vSrc, *vSrc64)
+		if err != nil {
+			os.Exit(1)
+		}
+
+		status, err := Verify(content, *sign, *pub)
 		if err != nil {
 			os.Exit(1)
 		}
