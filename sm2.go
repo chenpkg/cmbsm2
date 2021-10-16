@@ -178,7 +178,7 @@ func main() {
 		if err != nil {
 			os.Exit(1)
 		}
-		fmt.Println(sign)
+		fmt.Print(sign)
 	case "verify":
 		verifyCmd.Parse(os.Args[2:])
 		userId = []byte(*vUserId)
@@ -186,7 +186,7 @@ func main() {
 		if err != nil {
 			os.Exit(1)
 		}
-		fmt.Println(status)
+		fmt.Print(status)
 	default:
 		fmt.Println("expected 'sign' or 'verify' commands")
 		os.Exit(1)
