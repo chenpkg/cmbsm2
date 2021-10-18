@@ -175,13 +175,12 @@ func resolveSrc(src string, src64 string) (string, error) {
 	return "", errors.New("error resolve src")
 }
 
-// generateKey 生成符合招行的密钥
-func generateKey() (string, string) {
+// GenerateKey 生成符合招行的密钥
+func GenerateKey() (string, string, error) {
 	pri, pub, err := sm2.GenerateKey(rand.Reader)
 
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return "", "", err
 	}
 
 	privateKey := hex.EncodeToString(pri.GetRawBytes())
@@ -190,13 +189,12 @@ func generateKey() (string, string) {
 	hexDecode, err := hex.DecodeString(publicKey)
 
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		return "", "", err
 	}
 
 	publicKey = base64.StdEncoding.EncodeToString(hexDecode)
 
-	return privateKey, publicKey
+	return privateKey, publicKey, nil
 }
 
 // runCommand 执行命令行程序
@@ -249,7 +247,12 @@ func runCommand() {
 		}
 		fmt.Print(status)
 	case "generate":
-		pri, pub := generateKey()
+		pri, pub, err := GenerateKey()
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
 		fmt.Println("private key")
 		fmt.Println(pri)
 		fmt.Println()

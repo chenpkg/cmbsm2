@@ -30,3 +30,28 @@ func TestVerify(t *testing.T) {
 		t.Error("verify fail")
 	}
 }
+
+func TestGenerateKey(t *testing.T) {
+	pri, pub, err := GenerateKey()
+	if err != nil {
+		t.Error(err)
+	}
+
+	src := "encoding=UTF-8&signMethod=02&version=0.0.1"
+
+	// sign
+	sign, err := Sign(pri, src)
+	if err != nil {
+		t.Error(err)
+	}
+
+	// verify
+	status, err := Verify(src, sign, pub)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if status != true {
+		t.Error("verify fail")
+	}
+}
