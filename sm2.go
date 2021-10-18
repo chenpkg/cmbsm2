@@ -213,7 +213,7 @@ func runCommand() {
 	vUserId := verifyCmd.String("uid", "1234567812345678", "user id")
 
 	if len(os.Args) < 2 {
-		fmt.Println("expected 'sign' or 'verify' commands")
+		fmt.Println("expected 'sign'、'verify'、'generate' commands")
 		os.Exit(1)
 	}
 
@@ -259,7 +259,7 @@ func runCommand() {
 		fmt.Println("public key")
 		fmt.Println(pub)
 	default:
-		fmt.Println("expected 'sign' or 'verify' commands")
+		fmt.Println("expected 'sign'、'verify'、'generate' commands")
 		os.Exit(1)
 	}
 }
