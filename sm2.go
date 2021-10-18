@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/rand"
 	"encoding/base64"
 	"encoding/hex"
 	"errors"
@@ -12,7 +13,8 @@ import (
 	"strings"
 )
 
-var keyTitle = "3059301306072a8648ce3d020106082a811ccf5501822d03420004"
+// keyTitle SM2标准公钥头
+const keyTitle = "3059301306072a8648ce3d020106082a811ccf5501822d03420004"
 
 var userId []byte
 
@@ -72,7 +74,8 @@ func signAsn12Raw(signature []byte) ([]byte, error) {
 	}
 
 	// 数组复制
-	resultBytes = arraycopy(signature, wPos, resultBytes, 0, 32)
+	//resultBytes = arraycopy(signature, wPos, resultBytes, 0, 32)
+	copy(resultBytes[0:32], signature[wPos:])
 	wPos += 32
 	// 截取signS
 	wPos += 1
@@ -84,7 +87,8 @@ func signAsn12Raw(signature []byte) ([]byte, error) {
 		return nil, errors.New("signS length Error!")
 	}
 
-	resultBytes = arraycopy(signature, wPos, resultBytes, 32, 32)
+	//resultBytes = arraycopy(signature, wPos, resultBytes, 32, 32)
+	copy(resultBytes[32:], signature[wPos:])
 
 	return resultBytes, nil
 }
@@ -116,6 +120,7 @@ func unmarshalSign(str string) (r, s *big.Int, err error) {
 // Sign 生成签名
 func Sign(privateKey, src string) (string, error) {
 	privateKeyByte, err := hex.DecodeString(privateKey)
+
 	if err != nil {
 		return "", err
 	}
@@ -170,7 +175,32 @@ func resolveSrc(src string, src64 string) (string, error) {
 	return "", errors.New("error resolve src")
 }
 
-func main() {
+// generateKey 生成符合招行的密钥
+func generateKey() (string, string) {
+	pri, pub, err := sm2.GenerateKey(rand.Reader)
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	privateKey := hex.EncodeToString(pri.GetRawBytes())
+
+	publicKey := keyTitle+hex.EncodeToString(pub.GetRawBytes())
+	hexDecode, err := hex.DecodeString(publicKey)
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	publicKey = base64.StdEncoding.EncodeToString(hexDecode)
+
+	return privateKey, publicKey
+}
+
+// runCommand 执行命令行程序
+func runCommand() {
 	signCmd := flag.NewFlagSet("sign", flag.ExitOnError)
 	src := signCmd.String("src", "", "content string")
 	src64 := signCmd.String("src64", "", "content base64 string")
@@ -183,6 +213,8 @@ func main() {
 	pub := verifyCmd.String("pub", "", "public key")
 	sign := verifyCmd.String("sign", "", "sign")
 	vUserId := verifyCmd.String("uid", "1234567812345678", "user id")
+
+	//generate := flag.NewFlagSet("generate", flag.ExitOnError)
 
 	if len(os.Args) < 2 {
 		fmt.Println("expected 'sign' or 'verify' commands")
@@ -218,8 +250,19 @@ func main() {
 			os.Exit(1)
 		}
 		fmt.Print(status)
+	case "generate":
+		pri, pub := generateKey()
+		fmt.Println("private key")
+		fmt.Println(pri)
+		fmt.Println()
+		fmt.Println("public key")
+		fmt.Println(pub)
 	default:
 		fmt.Println("expected 'sign' or 'verify' commands")
 		os.Exit(1)
 	}
+}
+
+func main() {
+	runCommand()
 }
