@@ -214,8 +214,6 @@ func runCommand() {
 	sign := verifyCmd.String("sign", "", "sign")
 	vUserId := verifyCmd.String("uid", "1234567812345678", "user id")
 
-	//generate := flag.NewFlagSet("generate", flag.ExitOnError)
-
 	if len(os.Args) < 2 {
 		fmt.Println("expected 'sign' or 'verify' commands")
 		os.Exit(1)
