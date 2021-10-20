@@ -20,7 +20,7 @@ public key
 MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEeE/oyDVIBZoQiamV/l5fuHfKFuN2aftGBYd3g7gZM+g52xHZBekFljyrcaGw+ZwnUB1tsIGOLZ3KaaVM4tub9Q==
 ```
 
-> 如果需要指定 user id，则加上 uid 参数即可。uid 默认使用 1234567812345678.
+> 如果需要指定 user id，则加上 uid 参数即可。uid 默认使用 1234567812345678
 
 > `src` 内容如果有引号之类的符号，可使用 `src64` 代替 `src` 传输 `base64` 字符串
 
