@@ -1,4 +1,4 @@
-package main
+package sm2
 
 import (
 	"testing"
