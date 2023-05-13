@@ -1,4 +1,4 @@
-module github.com/chenpkg/cmbsm2
+module github.com/chenpkg/cmbsm2/v2
 
 go 1.16
 
