@@ -30,7 +30,7 @@ go get github.com/chenpkg/cmbsm2/v2
 ```
 
 ```go
-import "github.com/chenpkg/cmbsm2/sm2"
+import "github.com/chenpkg/cmbsm2/v2/sm2"
 
 // 如果需要自定义 uid
 sm2.SetUserId([]byte("1234567812345678")
