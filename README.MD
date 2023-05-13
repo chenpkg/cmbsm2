@@ -26,7 +26,7 @@ MFkwEwYHKoZIzj0CAQYIKoEcz1UBgi0DQgAEeE/oyDVIBZoQiamV/l5fuHfKFuN2aftGBYd3g7gZM+g5
 ## API Usage
 
 ```shell
-go get github.com/chenpkg/cmbsm2
+go get github.com/chenpkg/cmbsm2/v2
 ```
 
 ```go
